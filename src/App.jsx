@@ -12,27 +12,10 @@ export default function App() {
     getComments();
   }, []);
 
-  function appendWork(comment) {
-    setComments([...comments, comment]);
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-
-    const formData = new FormData(e.target);
-    const formObj = Object.fromEntries(formData);
-    formObj.id = crypto.randomUUID();
-
-    appendWork(formObj);
-    e.target.reset();
-  }
 
   return (
     <>
-      <form onSubmit={handleSubmit} autoComplete="off">
-        <input type="text" name="comment" placeholder="Add comment..." />
-        <button type="submit">Submit</button>
-      </form>
+      <AddComment setComments={setComments} />
       <div className="comment-section">
         {comments.length === 0 ?
           <p>No comments found.</p> :
@@ -59,6 +42,37 @@ export default function App() {
             </li>)}
           </ul>}
       </div>
+    </>
+  )
+}
+
+function AddComment({ setComments }) {
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const formObj = Object.fromEntries(formData);
+
+    const newCommentObj = {
+      id: crypto.randomUUID(),
+      name: "Gaye Dinç",
+      time: "now",
+      comment: formObj.comment,
+      likes: 0,
+      dislikes: 0,
+      replies: [],
+    };
+
+    setComments((comments) => [newCommentObj, ...comments]);
+    e.target.reset();
+  }
+  return (
+    <>
+      <form onSubmit={handleSubmit} autoComplete="off">
+        <input type="text" name="comment" placeholder="Add comment..." />
+        <button type="submit">Submit</button>
+      </form>
     </>
   )
 }
